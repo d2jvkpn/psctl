@@ -1,0 +1,70 @@
+- hosts: "{{hosts_name}}"
+  gather_facts: true
+  vars_files: ["vars.yaml"]
+
+  tasks:
+  ####
+  - name: setup
+    setup:
+      filter: ansible_date_time
+
+  ####
+  - name: copy execute.py
+    tags: ["run", "copy_script"]
+    win_copy:
+      src: "{{root_path}}/scripts/execute.py"
+      dest: "{{work_path}}"
+
+  - name: run job
+    tags: ["run"]
+    async: 1
+    poll: 0
+    args:
+      chdir: "{{work_path}}"
+    win_command: python .\execute.py run {{win_cmd}}
+
+  ####
+  - name: execute job
+    tags: ["execute"]
+    args:
+      chdir: "{{work_path}}"
+    win_command: python .\execute.py {{call}} {{win_cmd}}
+
+  ####
+  - name: fetch run log
+    tags: ["get_log"]
+    fetch:
+      src: "{{work_path}}\\{{ md5_sum }}.log"
+      dest: ./
+      flat: true
+      validate_checksum: false
+
+  - name: fetch program log
+    tags: ["get_log"]
+    fetch:
+      src: "{{work_path}}\\{{program}}\\Saved\\Logs\\{{program}}.log"
+      dest: ./
+      flat: true
+      validate_checksum: false
+
+  ####
+  - name: job status
+    tags: ["get_status"]
+    register: job_status
+    args:
+      chdir: "{{work_path}}"
+    win_command: python .\execute.py status {{win_cmd}}
+
+  - name: read status
+    tags: ["get_status"]
+    debug: var=job_status.stdout_lines
+
+  - name: save status
+    tags: ["get_status"]
+    local_action:
+      module: lineinfile
+      line: "{{ansible_date_time.date}}T{{ansible_date_time.time}}{{ansible_date_time.tz_offset}}
+        {{inventory_hostname}} {{job_status.stdout_lines[0]}}"
+      create: true
+      insertafter: EOF
+      dest: status.log

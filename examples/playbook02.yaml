@@ -1,0 +1,84 @@
+---
+  - name: Project_001 on win01
+    hosts: win01
+    gather_facts: true
+    vars:
+      program: Project
+      work_path: D:\projects\Project_001
+      win_cmd:
+        Project.exe -AudioMixer -PixelStreamingIP=192.168.0.171 -PixelStreamingPort=8204 -RenderOffScreen
+
+
+    tasks:
+    ####
+    - name: setup
+      setup:
+        filter: ansible_date_time
+
+    ####
+    - name: copy execute.py
+      tags: ["run", "copy_script"]
+      win_copy:
+        src: scripts/execute.py
+        dest: "{{work_path}}"
+
+    - name: run job
+      tags: ["run"]
+      async: 1
+      poll: 0
+      args:
+        chdir: "{{work_path}}"
+      win_command: python .\execute.py run {{win_cmd}}
+
+    ####
+    - name: execute job
+      tags: ["execute"]
+      args:
+        chdir: "{{work_path}}"
+      win_command: python .\execute.py {{call}} {{win_cmd}}
+
+    ####
+    - name: find run log
+      tags: ["get_log"]
+      register: run_log_result
+      win_find: 
+        paths: "{{work_path}}"
+        patterns: "*.log"
+
+    - name: fetch run log
+      tags: ["get_log"]
+      fetch:
+        src: "{{ item.path }}"
+        dest: ./log/
+        flat: true
+      with_items: "{{ run_log_result.files }}"
+
+    ####
+    - name: fetch program log
+      tags: ["get_log"]
+      fetch:
+        src: "{{ work_path }}\\{{program}}\\Saved\\Logs\\{{program}}.log"
+        dest: ./log/
+        flat: true
+
+    ####
+    - name: job status
+      tags: ["get_status"]
+      register: job_status
+      args:
+        chdir: "{{work_path}}"
+      win_command: python .\execute.py status {{win_cmd}}
+
+    - name: read status
+      tags: ["get_status"]
+      debug: var=job_status.stdout_lines
+
+    - name: save status
+      tags: ["get_status"]
+      local_action:
+        module: lineinfile
+        line: "{{ansible_date_time.date}}T{{ansible_date_time.time}}\
+          {{ansible_date_time.tz_offset}} {{inventory_hostname}} {{job_status.stdout_lines[0]}}"
+        create: true
+        insertafter: EOF
+        dest: log/status.log
