@@ -8,3 +8,8 @@ configs/
 wk*/
 ansible_data/
 data/
+
+/*.toml
+/*.yaml
+/*.yml
+/*.json
