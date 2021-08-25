@@ -1,5 +1,5 @@
-host = win01
-project = D:\projects\ArchVizExplorerr426
-program = ArchVizExplorer
-swsIp = 192.168.0.171
-swsPort = 8102
+host: win01
+project: D:\projects\ArchVizExplorerr426
+program: ArchVizExplorer
+swsIp: 192.168.0.171
+swsPort: 8102
