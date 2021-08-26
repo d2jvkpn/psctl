@@ -20,7 +20,7 @@ func NewInstanceCmd(name string) (command *cobra.Command) {
 	command = &cobra.Command{
 		Use:   name,
 		Short: `run a instance`,
-		Long:  `run a ue streamer instance: view, run, sync, syncLog, syncStatus, kill`,
+		Long:  `run a ue streamer instance: ping, view, run, sync, syncLog, syncStatus, kill`,
 
 		Run: func(cmd *cobra.Command, args []string) {
 			var (
@@ -58,6 +58,8 @@ func NewInstanceCmd(name string) (command *cobra.Command) {
 
 func callFunc(inst *ueV1.Instance, call string) (err error) {
 	switch call {
+	case "ping":
+		err = inst.Ping()
 	case "view":
 		var output string
 		if output, err = inst.View(); err != nil {

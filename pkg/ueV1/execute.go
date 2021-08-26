@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"strings"
 
@@ -91,7 +92,8 @@ func (inst *Instance) NewPlaybook(override bool) (err error) {
 }
 
 func (inst *Instance) Ping() (err error) {
-	return inst.RunCmd("ansible", inst.Host, "-m", "win_ping")
+	cmd := exec.Command("ansible", inst.Host, "-m", "win_ping")
+	return cmd.Run()
 }
 
 func (inst *Instance) Playbook(arg ...string) (err error) {
@@ -104,6 +106,7 @@ func (inst *Instance) Playbook(arg ...string) (err error) {
 
 func (inst *Instance) View() (string, error) {
 	var (
+		ok     bool
 		bts    []byte
 		target string
 		err    error
@@ -111,11 +114,11 @@ func (inst *Instance) View() (string, error) {
 
 	target = filepath.Join(inst.WorkPath(), "status.log")
 
-	if _, err = os.Stat(target); err != nil {
-		if os.IsNotExist(err) {
-			return "", nil
-		}
+	if ok, err = misc.FileExists(target); err != nil {
 		return "", err
+	}
+	if !ok {
+		return "", nil
 	}
 
 	if bts, err = ioutil.ReadFile(target); err != nil {

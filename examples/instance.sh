@@ -3,30 +3,36 @@ set -eu -o pipefail
 
 wd=$(pwd)
 
-
-####
-go run psctl.go instance examples/ArchVizExplorer427.toml view
-
-go run psctl.go instance examples/ArchVizExplorer427.toml run
-
-go run psctl.go instance examples/ArchVizExplorer427.toml sync
-
-go run psctl.go instance examples/ArchVizExplorer427.toml syncLog
-
-go run psctl.go instance examples/ArchVizExplorer427.toml syncStatus
-
-go run psctl.go instance examples/ArchVizExplorer427.toml kill
+go build psctl.go
 
 
 ####
-go run psctl.go instance examples/ArchVizExplorer426.yaml view
+./psctl instance examples/ArchVizExplorer427.toml ping
 
-go run psctl.go instance examples/ArchVizExplorer426.yaml run
+./psctl instance examples/ArchVizExplorer427.toml view
 
-go run psctl.go instance examples/ArchVizExplorer426.yaml sync
+./psctl instance examples/ArchVizExplorer427.toml run
 
-go run psctl.go instance examples/ArchVizExplorer426.yaml syncLog
+./psctl instance examples/ArchVizExplorer427.toml sync
 
-go run psctl.go instance examples/ArchVizExplorer426.yaml syncStatus
+./psctl instance examples/ArchVizExplorer427.toml syncLog
 
-go run psctl.go instance examples/ArchVizExplorer426.yaml kill
+./psctl instance examples/ArchVizExplorer427.toml syncStatus
+
+./psctl instance examples/ArchVizExplorer427.toml kill
+
+
+####
+
+
+./psctl instance examples/ArchVizExplorer426.yaml view
+
+./psctl instance examples/ArchVizExplorer426.yaml run
+
+./psctl instance examples/ArchVizExplorer426.yaml sync
+
+./psctl instance examples/ArchVizExplorer426.yaml syncLog
+
+./psctl instance examples/ArchVizExplorer426.yaml syncStatus
+
+./psctl instance examples/ArchVizExplorer426.yaml kill

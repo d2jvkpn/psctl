@@ -41,7 +41,7 @@ func NewDemoCmd(name string) (command *cobra.Command) {
 	fSet.StringVar(&base.Project, "project", "D:\\projects\\Project_001", "project directory in windows")
 	fSet.StringVar(&base.Program, "program", "Project", "program name without .exe extension")
 	fSet.StringVar(&base.SwsIp, "swsIp", "192.168.0.171", "signaling and web server(SWS) ip address")
-	fSet.StringVar(&base.SwsPort, "swsPort", "8204", "SWS port")
+	fSet.StringVar(&base.SwsPort, "swsPort", "8201", "SWS port")
 
 	/*
 		base := ueV1.InstanceBase{
@@ -62,8 +62,11 @@ func demo(base ueV1.InstanceBase) (err error) {
 		return err
 	}
 
-	// time.Sleep(time.Second)
-	// inst.Ping()
+	log.Println(">>> instance: ping")
+	if err = inst.Ping(); err != nil {
+		return err
+	}
+
 	log.Println(">>> instance: start")
 	if err = inst.Run(); err != nil {
 		return err

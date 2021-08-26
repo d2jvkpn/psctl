@@ -146,14 +146,19 @@ func (inst *Instance) writeStatus(status string) (err error) {
 }
 
 func (inst *Instance) end() (err error) {
+	var (
+		bn, wd, suffix string
+		now            time.Time
+	)
+
 	if err = inst.SyncLog(); err != nil {
 		return err
 	}
 
-	now := time.Now()
-	wd, suffix := inst.WorkPath(), now.Format(".backup_2006-01-03T15-04-05.log")
+	now = time.Now()
+	wd, suffix = inst.WorkPath(), now.Format(".backup_2006-01-03T15-04-05.log")
 
-	bn := filepath.Join(wd, "logs", misc.CmdMd5(inst.commandline()))
+	bn = filepath.Join(wd, "logs", misc.CmdMd5(inst.commandline()))
 	os.Rename(bn+".log", bn+suffix)
 
 	bn = filepath.Join(wd, "logs", inst.Program)
