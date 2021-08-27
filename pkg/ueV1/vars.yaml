@@ -2,5 +2,5 @@ hosts_name: win01
 program: Project
 work_path: D:\projects\Project_001
 root_path: /media/hello/Workspace/git_projects/Evol/ue_cloud
-md5_sum: 92d8cd56fd359d979eeef267c464bf2a
+command_md5: 92d8cd56fd359d979eeef267c464bf2a
 win_cmd: Project.exe -AudioMixer -PixelStreamingIP=192.168.0.171 -PixelStreamingPort=8204 -RenderOffScreen

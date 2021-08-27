@@ -12,45 +12,9 @@ import (
 	"psctl/pkg/misc"
 )
 
-func (inst *Instance) NewPlaybook0(override bool) (err error) {
-	dir := inst.WorkPath()
-	if override {
-		err = os.MkdirAll(dir, 0755)
-	} else {
-		err = os.Mkdir(dir, 0755)
-	}
-	if err != nil {
-		return fmt.Errorf("mkdir %s: %w", dir, err)
-	}
-
-	if err = misc.FileCopy("data/playbook.yaml", filepath.Join(dir, "playbook.yaml")); err != nil {
-		return fmt.Errorf("copy playbook.yaml: %w", err)
-	}
-
-	data := struct {
-		*Instance
-		Md5Sum string
-		Cmd    string
-	}{
-		Instance: inst,
-		Md5Sum:   misc.CmdMd5(inst.commandline()),
-		Cmd:      strings.Join(inst.Command, " "),
-	}
-
-	buf := bytes.NewBuffer([]byte{})
-	if err = varsYamlTmpl.Execute(buf, data); err != nil {
-		return fmt.Errorf("varsYamlTmpl.Execute: %w", err)
-	}
-
-	if err = ioutil.WriteFile(filepath.Join(dir, "vars.yaml"), buf.Bytes(), 0644); err != nil {
-		return fmt.Errorf("write vars.yaml: %w", err)
-	}
-
-	return nil
-}
-
 func (inst *Instance) NewPlaybook(override bool) (err error) {
 	dir := inst.WorkPath()
+
 	if override {
 		err = os.MkdirAll(filepath.Join(dir, "logs"), 0755)
 	} else {
@@ -67,12 +31,12 @@ func (inst *Instance) NewPlaybook(override bool) (err error) {
 
 	data := struct {
 		*Instance
-		Md5Sum string
-		Cmd    string
+		CommandMd5 string
+		Cmd        string
 	}{
-		Instance: inst,
-		Md5Sum:   misc.CmdMd5(inst.commandline()),
-		Cmd:      strings.Join(inst.Command, " "),
+		Instance:   inst,
+		CommandMd5: inst.commandMd5,
+		Cmd:        strings.Join(inst.Command, " "),
 	}
 
 	buf := bytes.NewBuffer([]byte{})

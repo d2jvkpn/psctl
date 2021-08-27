@@ -39,7 +39,7 @@ func NewInstanceCmd(name string) (command *cobra.Command) {
 				log.Fatal(err)
 			}
 
-			fmt.Println("### Instance:", inst.InstanceBase)
+			fmt.Printf("### Instance %s: %s\n", inst.WorkPath(), inst.InstanceBase)
 
 			if err = callFunc(&inst, call); err != nil {
 				log.Fatal(err)

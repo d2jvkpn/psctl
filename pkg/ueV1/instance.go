@@ -43,10 +43,11 @@ type InstanceBase struct {
 }
 
 type Instance struct {
-	Id      int64    `json:"id"`
-	Name    string   `json:"name"`
-	Root    string   `json:"root"`
-	Command []string `json:"command"`
+	Id         int64    `json:"id"`
+	Name       string   `json:"name"`
+	Root       string   `json:"root"`
+	Command    []string `json:"command"`
+	commandMd5 string
 
 	InstanceBase
 }
@@ -95,10 +96,12 @@ func (base InstanceBase) commandline() []string {
 }
 
 func (base InstanceBase) Inst(id int64) (inst Instance) {
+	cmd := base.commandline()
 	inst = Instance{
 		Id:           id,
 		Name:         inst.Project + " on " + inst.Host,
-		Command:      base.commandline(),
+		Command:      cmd,
+		commandMd5:   misc.CmdMd5(cmd),
 		InstanceBase: base,
 	}
 	inst.Root, _ = os.Getwd()
@@ -108,7 +111,7 @@ func (base InstanceBase) Inst(id int64) (inst Instance) {
 func (inst *Instance) WorkPath() string {
 	strs := strings.Split(inst.Project, "\\")
 
-	return filepath.Join(RootWorkingDir, inst.Host, strs[len(strs)-1])
+	return filepath.Join(RootWorkingDir, inst.Host, strs[len(strs)-1], inst.commandMd5)
 }
 
 func (inst *Instance) RunCmd(name string, arg ...string) (err error) {
@@ -158,7 +161,7 @@ func (inst *Instance) end() (err error) {
 	now = time.Now()
 	wd, suffix = inst.WorkPath(), now.Format(".backup_2006-01-03T15-04-05.log")
 
-	bn = filepath.Join(wd, "logs", misc.CmdMd5(inst.commandline()))
+	bn = filepath.Join(wd, "logs", inst.commandMd5)
 	os.Rename(bn+".log", bn+suffix)
 
 	bn = filepath.Join(wd, "logs", inst.Program)

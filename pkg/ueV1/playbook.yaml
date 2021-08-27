@@ -32,7 +32,7 @@
     tags: ["run"]
     win_wait_for:
       timeout: 5 # must greater than "time.sleep(v)" before "proc.poll()" in scripts/execute.py
-      path: "{{work_path}}\\{{md5_sum}}.pid"
+      path: "{{work_path}}\\{{command_md5}}.pid"
 
   ####
   - name: execute job
@@ -45,7 +45,7 @@
   - name: fetch run log
     tags: ["get_log"]
     fetch:
-      src: "{{work_path}}\\{{ md5_sum }}.log"
+      src: "{{work_path}}\\{{ command_md5 }}.log"
       dest: ./logs/
       flat: true
       validate_checksum: false

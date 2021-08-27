@@ -27,9 +27,10 @@ func NewDemoCmd(name string) (command *cobra.Command) {
 			var err error
 
 			// fmt.Println("~~~", args)
-			fmt.Printf("### Instance: %#v\n", base)
+			inst := base.Inst(0)
+			fmt.Printf("### Instance %s: %s\n", inst.WorkPath(), inst)
 
-			if err = demo(base); err != nil {
+			if err = demo(inst); err != nil {
 				log.Fatal(err)
 			}
 		},
@@ -56,8 +57,7 @@ func NewDemoCmd(name string) (command *cobra.Command) {
 	return command
 }
 
-func demo(base ueV1.InstanceBase) (err error) {
-	inst := base.Inst(0)
+func demo(inst ueV1.Instance) (err error) {
 	if err = inst.NewPlaybook(true); err != nil {
 		return err
 	}
