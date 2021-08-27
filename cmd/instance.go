@@ -82,7 +82,7 @@ func callFunc(inst *ueV1.Instance, call string) (err error) {
 	//case "clear":
 	//	err = inst.Clear()
 	default:
-		err = fmt.Errorf("unknow call")
+		err = fmt.Errorf("unknown call")
 	}
 
 	return err
