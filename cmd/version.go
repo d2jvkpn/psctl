@@ -64,7 +64,7 @@ type BuildInfo struct {
 
 func (info BuildInfo) String() string {
 	return fmt.Sprintf(
-		"psctl:\n  version: %s\n  go version: %s\n  build branch: %s\n  build time: %s\n",
+		"psctl:\n  version: %s\n  go version: %s\n  build branch: %s\n  build time: %s",
 		info.Version, info.GoVersion,
 		info.BuildBranch, info.BuildTime,
 	)
