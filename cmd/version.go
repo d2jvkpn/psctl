@@ -15,7 +15,7 @@ var (
 	//go:embed version.txt
 	version string
 
-	buildTime string
+	BuildTime string
 )
 
 func init() {
@@ -37,7 +37,7 @@ func NewVersionCmd(name string) (command *cobra.Command) {
 			info := BuildInfo{
 				Version:   version,
 				GoVersion: strings.Replace(runtime.Version(), "go", "", 1),
-				BuildTime: buildTime,
+				BuildTime: BuildTime,
 			}
 			if jsonFmt {
 				fmt.Println(info.JSON())
