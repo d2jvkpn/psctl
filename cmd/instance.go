@@ -20,8 +20,8 @@ func NewInstanceCmd(name string) (command *cobra.Command) {
 	command = &cobra.Command{
 		Use:   name,
 		Short: `run a instance`,
-		Long: `run a ue streamer instance: <config.yaml> ` +
-			`<new, start, sync, kill, restart, syncLog, syncStatus, ping, view>`,
+		Long: `run a ue streamer instance: pstcl  <instance.yaml>  <call>
+  call: [new, start, sync, kill, restart, syncLog, syncStatus, ping, view]`,
 
 		Run: func(cmd *cobra.Command, args []string) {
 			var (
