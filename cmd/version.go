@@ -14,6 +14,8 @@ import (
 var (
 	//go:embed version.txt
 	version string
+
+	buildTime string
 )
 
 func init() {
@@ -35,6 +37,7 @@ func NewVersionCmd(name string) (command *cobra.Command) {
 			info := BuildInfo{
 				Version:   version,
 				GoVersion: strings.Replace(runtime.Version(), "go", "", 1),
+				BuildTime: buildTime,
 			}
 			if jsonFmt {
 				fmt.Println(info.JSON())
@@ -53,12 +56,13 @@ func NewVersionCmd(name string) (command *cobra.Command) {
 type BuildInfo struct {
 	Version   string `json:"version"`
 	GoVersion string `json:"goVersion"`
+	BuildTime string `json:"buildTime"`
 }
 
 func (info BuildInfo) String() string {
 	return fmt.Sprintf(
-		"psctl:\n  version: %s\n  go version: %s",
-		info.Version, info.GoVersion,
+		"psctl:\n  version: %s\n  go version: %s\n  build time: %s\n",
+		info.Version, info.GoVersion, info.BuildTime,
 	)
 }
 
