@@ -14,13 +14,16 @@ import (
 
 func (inst *Instance) NewPlaybook(override bool) (err error) {
 	dir := inst.WorkPath()
+	target := filepath.Join(dir, "logs")
+	yes := false
 
-	if override {
-		err = os.MkdirAll(filepath.Join(dir, "logs"), 0755)
-	} else {
-		err = os.Mkdir(filepath.Join(dir, "logs"), 0755)
+	if yes, err = misc.DirExists(target); err != nil {
+		return err
+	} else if yes && !override {
+		return nil
 	}
-	if err != nil {
+
+	if err = os.MkdirAll(target, 0755); err != nil {
 		return fmt.Errorf("mkdir %s: %w", dir, err)
 	}
 
@@ -92,12 +95,16 @@ func (inst *Instance) View() (string, error) {
 	return string(bts), err
 }
 
-func (inst *Instance) Run() (err error) {
-	if err = inst.writeStatus("starting"); err != nil {
+func (inst *Instance) Start() (err error) {
+	if inst.NewPlaybook(false); err != nil {
+		return nil
+	}
+
+	if err = inst.writeStatus("start"); err != nil {
 		return err
 	}
 
-	if err = inst.Playbook("--tags", "run"); err != nil {
+	if err = inst.Playbook("--tags", "start"); err != nil {
 		return err
 	}
 

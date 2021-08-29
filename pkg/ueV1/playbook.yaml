@@ -21,7 +21,7 @@
 
   ####
   - name: run job
-    tags: ["run"]
+    tags: ["start"]
     async: 1
     poll: 0
     args:
@@ -29,7 +29,7 @@
     win_command: python .\execute.py run {{win_cmd}}
 
   - name: wait for pidfile
-    tags: ["run"]
+    tags: ["start"]
     win_wait_for:
       timeout: 5 # must greater than "time.sleep(v)" before "proc.poll()" in scripts/execute.py
       path: "{{work_path}}\\{{command_md5}}.pid"

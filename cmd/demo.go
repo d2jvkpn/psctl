@@ -62,13 +62,15 @@ func demo(inst ueV1.Instance) (err error) {
 		return err
 	}
 
-	log.Println(">>> instance: ping")
-	if err = inst.Ping(); err != nil {
-		return err
-	}
+	/*
+		log.Println(">>> instance: ping")
+		if err = inst.Ping(); err != nil {
+			return err
+		}
+	*/
 
 	log.Println(">>> instance: start")
-	if err = inst.Run(); err != nil {
+	if err = inst.Start(); err != nil {
 		return err
 	}
 	log.Println(">>> instance: run")

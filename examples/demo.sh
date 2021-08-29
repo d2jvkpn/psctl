@@ -7,11 +7,13 @@ go build psctl.go
 
 
 ####
-./psctl instance examples/ArchVizExplorer427.toml ping
-
 ./psctl instance examples/ArchVizExplorer427.toml view
 
-./psctl instance examples/ArchVizExplorer427.toml run
+./psctl instance examples/ArchVizExplorer427.toml new
+
+./psctl instance examples/ArchVizExplorer427.toml start
+
+./psctl instance examples/ArchVizExplorer427.toml kill
 
 ./psctl instance examples/ArchVizExplorer427.toml sync
 
@@ -19,15 +21,13 @@ go build psctl.go
 
 ./psctl instance examples/ArchVizExplorer427.toml syncStatus
 
-./psctl instance examples/ArchVizExplorer427.toml kill
+./psctl instance examples/ArchVizExplorer427.toml restart
 
 
 ####
-
-
 ./psctl instance examples/ArchVizExplorer426.yaml view
 
-./psctl instance examples/ArchVizExplorer426.yaml run
+./psctl instance examples/ArchVizExplorer426.yaml start
 
 ./psctl instance examples/ArchVizExplorer426.yaml sync
 

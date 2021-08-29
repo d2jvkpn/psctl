@@ -20,7 +20,8 @@ func NewInstanceCmd(name string) (command *cobra.Command) {
 	command = &cobra.Command{
 		Use:   name,
 		Short: `run a instance`,
-		Long:  `run a ue streamer instance: ping, view, run, sync, syncLog, syncStatus, kill`,
+		Long: `run a ue streamer instance: <config.yaml> ` +
+			`<new, start, sync, kill, restart, syncLog, syncStatus, ping, view>`,
 
 		Run: func(cmd *cobra.Command, args []string) {
 			var (
@@ -58,6 +59,26 @@ func NewInstanceCmd(name string) (command *cobra.Command) {
 
 func callFunc(inst *ueV1.Instance, call string) (err error) {
 	switch call {
+	case "new":
+		err = inst.NewPlaybook(true)
+	case "start":
+		err = inst.Start()
+	case "sync":
+		err = inst.Sync()
+	case "kill":
+		err = inst.Kill()
+	case "restart":
+		if err = inst.Kill(); err != nil {
+			return err
+		}
+		err = inst.Start()
+	///
+	//case "clear":
+	//	err = inst.Clear()
+	case "syncLog":
+		err = inst.SyncLog()
+	case "syncStatus":
+		err = inst.SyncStatus()
 	case "ping":
 		err = inst.Ping()
 	case "view":
@@ -66,21 +87,6 @@ func callFunc(inst *ueV1.Instance, call string) (err error) {
 			return err
 		}
 		fmt.Print(output)
-	case "run":
-		if err = inst.NewPlaybook(true); err != nil {
-			return err
-		}
-		err = inst.Run()
-	case "sync":
-		err = inst.Sync()
-	case "syncLog":
-		err = inst.SyncLog()
-	case "syncStatus":
-		err = inst.SyncStatus()
-	case "kill":
-		err = inst.Kill()
-	//case "clear":
-	//	err = inst.Clear()
 	default:
 		err = fmt.Errorf("unknown call")
 	}
