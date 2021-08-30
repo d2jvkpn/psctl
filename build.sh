@@ -10,7 +10,7 @@ git add -A # include Untracked files for git diff
 test -z "$(git diff HEAD)" || { echo "You have uncommitted changes!"; exit 1; }
 
 test -z "$(git diff origin/$branch..HEAD --name-status)" ||
-{ echo "You have unpushed changes!"; exit 1; }
+  { echo "You have unpushed commits!"; exit 1; }
 
 
 go build -o psctl -ldflags="                 \
