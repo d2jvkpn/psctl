@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	_ "embed"
 	"encoding/json"
 	"fmt"
 	"runtime"
@@ -12,18 +11,11 @@ import (
 )
 
 var (
-	//go:embed version.txt
-	version string
-
 	BuildTime   string
 	BuildBranch string
 )
 
-func init() {
-	version = strings.Fields(version)[0]
-}
-
-func NewVersionCmd(name string) (command *cobra.Command) {
+func NewVersionCmd(name, version string) (command *cobra.Command) {
 	var (
 		jsonFmt bool
 		fSet    *pflag.FlagSet
