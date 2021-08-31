@@ -28,7 +28,7 @@ func main() {
 	rootCmd.AddCommand(cmd.NewMd5Cmd("md5"))
 	rootCmd.AddCommand(cmd.NewVersionCmd("version", version))
 	rootCmd.AddCommand(cmd.NewDemoCmd("demo"))
-	rootCmd.AddCommand(cmd.NewInstanceCmd("instance"))
+	rootCmd.AddCommand(cmd.NewLoadCmd("load"))
 
 	rootCmd.Execute()
 }

@@ -10,7 +10,7 @@ import (
 	"github.com/spf13/pflag"
 )
 
-func NewInstanceCmd(name string) (command *cobra.Command) {
+func NewLoadCmd(name string) (command *cobra.Command) {
 	var (
 		file string
 		call string
@@ -19,8 +19,8 @@ func NewInstanceCmd(name string) (command *cobra.Command) {
 
 	command = &cobra.Command{
 		Use:   name,
-		Short: `run a instance`,
-		Long: `run a ue streamer instance: pstcl  <instance.yaml>  <call>
+		Short: `load a project and execute`,
+		Long: `load a project(ue streamer instance): pstcl load <project.yaml>  <call>
   call: [new, start, sync, kill, restart, syncLog, syncStatus, ping, view]`,
 
 		Run: func(cmd *cobra.Command, args []string) {
