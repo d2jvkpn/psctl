@@ -6,7 +6,7 @@ wd=$(pwd)
 
 branch=$(git rev-parse --abbrev-ref HEAD)
 
-git add -A # include Untracked files for git diff
+git add -A # include untracked files for git diff, undo with git reset && git checkout .
 test -z "$(git diff HEAD)" || { echo "You have uncommitted changes!"; exit 1; }
 
 test -z "$(git diff origin/$branch..HEAD --name-status)" ||
