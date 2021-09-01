@@ -58,6 +58,10 @@ func NewLoadCmd(name string) (command *cobra.Command) {
 }
 
 func callFunc(inst *ueV1.Instance, call string) (err error) {
+	var (
+		output string
+	)
+
 	switch call {
 	case "new":
 		err = inst.NewPlaybook(true)
@@ -78,9 +82,8 @@ func callFunc(inst *ueV1.Instance, call string) (err error) {
 	case "sync":
 		err = inst.Sync()
 	case "status":
-		err = viewStatus(inst)
+		err = status(inst)
 	case "view":
-		var output string
 		if output, err = inst.View(); err == nil {
 			fmt.Print(output)
 		}
@@ -91,7 +94,7 @@ func callFunc(inst *ueV1.Instance, call string) (err error) {
 	return err
 }
 
-func viewStatus(inst *ueV1.Instance) (err error) {
+func status(inst *ueV1.Instance) (err error) {
 	var (
 		yes    bool
 		output string
