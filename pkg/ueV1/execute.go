@@ -71,9 +71,25 @@ func (inst *Instance) Playbook(arg ...string) (err error) {
 	return inst.RunCmd("ansible-playbook", cmds...)
 }
 
+func (inst *Instance) Exists() (yes bool, err error) {
+	var target string
+
+	target = filepath.Join(inst.WorkPath(), "playbook.yaml")
+	if yes, err = misc.FileExists(target); err != nil {
+		return false, err
+	}
+
+	target = filepath.Join(inst.WorkPath(), "vars.yaml")
+	if yes, err = misc.FileExists(target); err != nil {
+		return false, err
+	}
+
+	return yes, nil
+}
+
 func (inst *Instance) View() (string, error) {
 	var (
-		ok     bool
+		yes    bool
 		bts    []byte
 		target string
 		err    error
@@ -81,10 +97,10 @@ func (inst *Instance) View() (string, error) {
 
 	target = filepath.Join(inst.WorkPath(), "status.log")
 
-	if ok, err = misc.FileExists(target); err != nil {
+	if yes, err = misc.FileExists(target); err != nil {
 		return "", err
 	}
-	if !ok {
+	if !yes {
 		return "", nil
 	}
 

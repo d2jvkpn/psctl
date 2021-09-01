@@ -78,17 +78,33 @@ func callFunc(inst *ueV1.Instance, call string) (err error) {
 	case "sync":
 		err = inst.Sync()
 	case "status":
-		var output string
-		if err = inst.Status(); err != nil {
-			break
-		}
-		if output, err = inst.View(); err != nil {
-			break
-		}
-		fmt.Print(output)
+		err = viewStatus(inst)
 	default:
 		err = fmt.Errorf("unknown call")
 	}
 
 	return err
+}
+
+func viewStatus(inst *ueV1.Instance) (err error) {
+	var (
+		yes    bool
+		output string
+	)
+
+	if yes, err = inst.Exists(); err != nil {
+		return err
+	} else if !yes {
+		return nil
+	}
+
+	if err = inst.Status(); err != nil {
+		return err
+	}
+	if output, err = inst.View(); err != nil {
+		return err
+	}
+
+	fmt.Print(output)
+	return nil
 }
