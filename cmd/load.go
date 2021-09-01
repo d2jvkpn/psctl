@@ -21,7 +21,7 @@ func NewLoadCmd(name string) (command *cobra.Command) {
 		Use:   name,
 		Short: `load a project and execute`,
 		Long: `load a project(ue streamer instance): pstcl load <project.yaml>  <call>
-  call: [new, start, kill, restart, ping, sync, status]`,
+  call: [new, start, kill, restart, ping, sync, status, view]`,
 
 		Run: func(cmd *cobra.Command, args []string) {
 			var (
@@ -79,6 +79,11 @@ func callFunc(inst *ueV1.Instance, call string) (err error) {
 		err = inst.Sync()
 	case "status":
 		err = viewStatus(inst)
+	case "view":
+		var output string
+		if output, err = inst.View(); err == nil {
+			fmt.Print(output)
+		}
 	default:
 		err = fmt.Errorf("unknown call")
 	}
