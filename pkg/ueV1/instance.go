@@ -7,10 +7,8 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
-	"os/exec"
 	"path/filepath"
 	"strings"
-	"text/template"
 	"time"
 
 	"psctl/pkg/misc"
@@ -19,34 +17,19 @@ import (
 	yaml "gopkg.in/yaml.v2"
 )
 
-var (
-	//go:embed vars.tmpl
-	varsYaml     string
-	varsYamlTmpl *template.Template
-)
-
-func init() {
-	var err error
-
-	if varsYamlTmpl, err = template.New("varsYaml").Parse(varsYaml); err != nil {
-		fmt.Fprintf(os.Stderr, "ue.varsYamlTmpl Parse: %v\n", err)
-	}
-
-}
-
 type InstanceBase struct {
-	Host    string `toml:"host" yaml:"host" json:"host"`          // ansbile hostname or host group name
-	Project string `toml:"project" yaml:"project" json:"project"` // project directory in windows host(s)
-	Program string `toml:"program" yaml:"program" json:"program"` // exe program filename without extension
-	SwsIp   string `toml:"swsIp" yaml:"swsIp" json:"swsIp"`       // singaling and web server ip
-	SwsPort string `toml:"swsPort" yaml:"swsPort" json:"swsPort"` // sws streamer port
+	Host    string `toml:"host" yaml:"host" json:"host,omitempty"`          // ansbile hostname or host group name
+	Project string `toml:"project" yaml:"project" json:"project,omitempty"` // project directory in windows host(s)
+	Program string `toml:"program" yaml:"program" json:"program,omitempty"` // exe program filename without extension
+	SwsIp   string `toml:"swsIp" yaml:"swsIp" json:"swsIp,omitempty"`       // singaling and web server ip
+	SwsPort string `toml:"swsPort" yaml:"swsPort" json:"swsPort,omitempty"` // sws streamer port
 }
 
 type Instance struct {
-	Id         int64    `json:"id"`
-	Name       string   `json:"name"`
-	Root       string   `json:"root"`
-	Command    []string `json:"command"`
+	Id         int64    `json:"id,omitempty"`
+	Name       string   `json:"name,omitempty"`
+	Root       string   `json:"root,omitempty"`
+	Command    []string `json:"command,omitempty"`
 	commandMd5 string
 
 	InstanceBase
@@ -114,21 +97,89 @@ func (inst *Instance) WorkPath() string {
 	return filepath.Join(RootWorkingDir, inst.Host, strs[len(strs)-1], inst.commandMd5)
 }
 
-func (inst *Instance) RunCmd(name string, arg ...string) (err error) {
-	var buf bytes.Buffer
+func (inst *Instance) NewPlaybook(override bool) (err error) {
+	dir := inst.WorkPath()
+	target := filepath.Join(dir, "logs")
+	yes := false
 
-	cmd := exec.Command(name, arg...)
-	cmd.Dir = inst.WorkPath()
-	cmd.Env = append(cmd.Env, "ANSIBLE_LOG_PATH="+filepath.Join("logs", "ansible.log"))
-	cmd.Stdout, cmd.Stderr = &buf, &buf
-
-	if err = cmd.Run(); err != nil {
-		if out := buf.String(); len(out) > 0 {
-			return fmt.Errorf("%s\nRunCmd error: %w", out, err)
-		}
-		return fmt.Errorf("RunCmd error: %w", err)
+	if yes, err = misc.DirExists(target); err != nil {
+		return err
+	} else if yes && !override {
+		return nil
 	}
+
+	if err = os.MkdirAll(target, 0755); err != nil {
+		return fmt.Errorf("mkdir %s: %w", dir, err)
+	}
+
+	err = ioutil.WriteFile(filepath.Join(dir, "playbook.yaml"), playbook, 0644)
+	if err != nil {
+		return err
+	}
+
+	data := struct {
+		*Instance
+		CommandMd5 string
+		Cmd        string
+	}{
+		Instance:   inst,
+		CommandMd5: inst.commandMd5,
+		Cmd:        strings.Join(inst.Command, " "),
+	}
+
+	buf := bytes.NewBuffer([]byte{})
+	if err = varsYamlTmpl.Execute(buf, data); err != nil {
+		return fmt.Errorf("varsYamlTmpl.Execute: %w", err)
+	}
+
+	if err = ioutil.WriteFile(filepath.Join(dir, "vars.yaml"), buf.Bytes(), 0644); err != nil {
+		return fmt.Errorf("write vars.yaml: %w", err)
+	}
+
+	if err = inst.Playbook("--tags", "prepare"); err != nil {
+		return fmt.Errorf("ansile-playbook prepare: %w", err)
+	}
+
 	return nil
+}
+
+func (inst *Instance) Exists() (yes bool, err error) {
+	var target string
+
+	target = filepath.Join(inst.WorkPath(), "playbook.yaml")
+	if yes, err = misc.FileExists(target); err != nil {
+		return false, err
+	}
+
+	target = filepath.Join(inst.WorkPath(), "vars.yaml")
+	if yes, err = misc.FileExists(target); err != nil {
+		return false, err
+	}
+
+	return yes, nil
+}
+
+func (inst *Instance) View() (string, error) {
+	var (
+		yes    bool
+		bts    []byte
+		target string
+		err    error
+	)
+
+	target = filepath.Join(inst.WorkPath(), "status.log")
+	if yes, err = misc.FileExists(target); err != nil {
+		return "", err
+	}
+	if !yes {
+		return "", nil
+	}
+
+	if bts, err = ioutil.ReadFile(target); err != nil {
+		return "", err
+	}
+
+	return string(bts), err
 }
 
 func (inst *Instance) writeStatus(status string) (err error) {
