@@ -154,7 +154,7 @@ func (inst *Instance) end() (err error) {
 		now            time.Time
 	)
 
-	if err = inst.SyncLog(); err != nil {
+	if err = inst.Sync(); err != nil {
 		return err
 	}
 

@@ -73,17 +73,22 @@ func demo(inst ueV1.Instance) (err error) {
 	if err = inst.Start(); err != nil {
 		return err
 	}
-	log.Println(">>> instance: run")
 
 	time.Sleep(10 * time.Second)
-	log.Println(">>> instance: sync")
+	log.Println(">>> instance: sync and status")
 	if err = inst.Sync(); err != nil {
+		return err
+	}
+	if err = inst.Status(); err != nil {
 		return err
 	}
 
 	time.Sleep(90 * time.Second)
-	log.Println(">>> instance: sync")
+	log.Println(">>> instance: sync and status")
 	if err = inst.Sync(); err != nil {
+		return err
+	}
+	if err = inst.Status(); err != nil {
 		return err
 	}
 

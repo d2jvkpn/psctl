@@ -21,7 +21,7 @@ func NewLoadCmd(name string) (command *cobra.Command) {
 		Use:   name,
 		Short: `load a project and execute`,
 		Long: `load a project(ue streamer instance): pstcl load <project.yaml>  <call>
-  call: [new, start, sync, kill, restart, syncLog, syncStatus, ping, view]`,
+  call: [new, start, kill, restart, ping, sync, status]`,
 
 		Run: func(cmd *cobra.Command, args []string) {
 			var (
@@ -63,28 +63,27 @@ func callFunc(inst *ueV1.Instance, call string) (err error) {
 		err = inst.NewPlaybook(true)
 	case "start":
 		err = inst.Start()
-	case "sync":
-		err = inst.Sync()
 	case "kill":
 		err = inst.Kill()
 	case "restart":
 		if err = inst.Kill(); err != nil {
-			return err
+			break
 		}
 		err = inst.Start()
 	///
 	//case "clear":
 	//	err = inst.Clear()
-	case "syncLog":
-		err = inst.SyncLog()
-	case "syncStatus":
-		err = inst.SyncStatus()
 	case "ping":
 		err = inst.Ping()
-	case "view":
+	case "sync":
+		err = inst.Sync()
+	case "status":
 		var output string
+		if err = inst.Status(); err != nil {
+			break
+		}
 		if output, err = inst.View(); err != nil {
-			return err
+			break
 		}
 		fmt.Print(output)
 	default:

@@ -113,14 +113,11 @@ func (inst *Instance) Start() (err error) {
 
 // sync log and status
 func (inst *Instance) Sync() (err error) {
-	return inst.Playbook("--tags", "get_log,get_status")
-}
-
-func (inst *Instance) SyncLog() (err error) {
 	return inst.Playbook("--tags", "get_log")
+	// return inst.Playbook("--tags", "get_log,get_status")
 }
 
-func (inst *Instance) SyncStatus() (err error) {
+func (inst *Instance) Status() (err error) {
 	return inst.Playbook("--tags", "get_status")
 }
 
