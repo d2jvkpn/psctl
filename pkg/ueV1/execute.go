@@ -24,6 +24,14 @@ func (inst *Instance) RunCmd(name string, arg ...string) (err error) {
 	return nil
 }
 
+func (inst *Instance) prepare() (err error) {
+	if err = inst.Playbook("--tags", "prepare"); err != nil {
+		return fmt.Errorf("ansile-playbook prepare: %w", err)
+	}
+
+	return nil
+}
+
 func (inst *Instance) Ping() (err error) {
 	cmd := exec.Command("ansible", inst.Host, "-m", "win_ping")
 	return cmd.Run()

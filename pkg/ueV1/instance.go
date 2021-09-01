@@ -136,11 +136,7 @@ func (inst *Instance) NewPlaybook(override bool) (err error) {
 		return fmt.Errorf("write vars.yaml: %w", err)
 	}
 
-	if err = inst.Playbook("--tags", "prepare"); err != nil {
-		return fmt.Errorf("ansile-playbook prepare: %w", err)
-	}
-
-	return nil
+	return inst.prepare()
 }
 
 func (inst *Instance) Exists() (yes bool, err error) {
