@@ -1,2 +1,2 @@
 ### Pixel Streaming Controller
-Remotely control Pixel Streaming(Unreal Engine) program based on ansible.
+A remotely streamer(Pixel Streaming) controler program based on ansible.
