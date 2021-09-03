@@ -43,6 +43,7 @@ type Instance struct {
 	Root       string   `json:"root,omitempty"`
 	Command    []string `json:"command,omitempty"`
 	commandMd5 string
+	Debug      bool `json:"-"`
 
 	InstanceBase
 }

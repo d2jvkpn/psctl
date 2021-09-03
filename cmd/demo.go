@@ -28,6 +28,7 @@ func NewDemoCmd(name string) (command *cobra.Command) {
 
 			// fmt.Println("~~~", args)
 			inst := base.Inst(0)
+			inst.Debug = true
 			fmt.Printf("### Instance %s: %s\n", inst.WorkPath(), inst)
 
 			if err = demo(inst); err != nil {

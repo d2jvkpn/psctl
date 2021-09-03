@@ -41,6 +41,15 @@
       chdir: "{{work_path}}"
     win_command: python .\execute.py {{call}} {{win_cmd}}
 
+  - name: restart job
+    tags: ["restart"]
+    args:
+      chdir: "{{work_path}}"
+    win_command:
+      python .\execute.py kill {{win_cmd}}
+
+      python .\execute.py run {{win_cmd}}
+
   ####
   - name: fetch run log
     tags: ["get_log"]

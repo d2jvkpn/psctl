@@ -3,8 +3,10 @@ package ueV1
 import (
 	"bytes"
 	"fmt"
+	"log"
 	"os/exec"
 	"path/filepath"
+	"strings"
 )
 
 func (inst *Instance) RunCmd(name string, arg ...string) (err error) {
@@ -14,6 +16,10 @@ func (inst *Instance) RunCmd(name string, arg ...string) (err error) {
 	cmd.Dir = inst.WorkPath()
 	cmd.Env = append(cmd.Env, "ANSIBLE_LOG_PATH="+filepath.Join("logs", "ansible.log"))
 	cmd.Stdout, cmd.Stderr = &buf, &buf
+
+	if inst.Debug {
+		log.Printf(">>> $ %s %s", name, strings.Join(arg, " "))
+	}
 
 	if err = cmd.Run(); err != nil {
 		if out := buf.String(); len(out) > 0 {
@@ -76,11 +82,23 @@ func (inst *Instance) Kill() (err error) {
 		return err
 	}
 
-	if err = inst.writeStatus("killed"); err != nil {
+	if err = inst.writeStatus("kill"); err != nil {
 		return err
 	}
 
 	if err = inst.end(); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (inst *Instance) Restart() (err error) {
+	if err = inst.writeStatus("restart"); err != nil {
+		return err
+	}
+
+	if err = inst.Playbook("--tags", "restart"); err != nil {
 		return err
 	}
 

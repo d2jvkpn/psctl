@@ -40,6 +40,7 @@ func NewLoadCmd(name string) (command *cobra.Command) {
 				log.Fatal(err)
 			}
 
+			inst.Debug = true
 			fmt.Printf("### Instance %s: %s\n", inst.WorkPath(), inst.InstanceBase)
 
 			if err = callFunc(&inst, call); err != nil {
@@ -70,10 +71,7 @@ func callFunc(inst *ueV1.Instance, call string) (err error) {
 	case "kill":
 		err = inst.Kill()
 	case "restart":
-		if err = inst.Kill(); err != nil {
-			break
-		}
-		err = inst.Start()
+		err = inst.Restart()
 	///
 	//case "clear":
 	//	err = inst.Clear()
