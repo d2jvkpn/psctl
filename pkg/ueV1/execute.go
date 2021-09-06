@@ -45,7 +45,8 @@ func (inst *Instance) Ping() (err error) {
 
 func (inst *Instance) Playbook(arg ...string) (err error) {
 	cmds := make([]string, 0, 3+len(arg))
-	cmds = append(cmds, "playbook.yaml", "--inventory", inst.Root+"/configs/hosts.ini")
+	// cmds = append(cmds, "playbook.yaml", "--inventory", inst.Root+"/configs/hosts.ini")
+	cmds = append(cmds, "playbook.yaml", "--inventory", "../../../../configs/hosts.ini")
 	cmds = append(cmds, arg...)
 
 	return inst.RunCmd("ansible-playbook", cmds...)
