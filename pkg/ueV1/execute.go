@@ -79,27 +79,15 @@ func (inst *Instance) Status() (err error) {
 }
 
 func (inst *Instance) Kill() (err error) {
-	if err = inst.Playbook("--tags", "execute", "--extra-vars", "call=kill"); err != nil {
-		return err
-	}
-
 	if err = inst.writeStatus("kill"); err != nil {
 		return err
 	}
 
+	if err = inst.Playbook("--tags", "execute", "--extra-vars", "call=kill"); err != nil {
+		return err
+	}
+
 	if err = inst.end(); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (inst *Instance) Restart() (err error) {
-	if err = inst.writeStatus("restart"); err != nil {
-		return err
-	}
-
-	if err = inst.Playbook("--tags", "restart"); err != nil {
 		return err
 	}
 

@@ -71,7 +71,10 @@ func callFunc(inst *ueV1.Instance, call string) (err error) {
 	case "kill":
 		err = inst.Kill()
 	case "restart":
-		err = inst.Restart()
+		if err = inst.Kill(); err != nil {
+			break
+		}
+		err = inst.Start()
 	///
 	//case "clear":
 	//	err = inst.Clear()
