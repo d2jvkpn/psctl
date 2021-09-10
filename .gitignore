@@ -1,12 +1,10 @@
 *.log
 *.exe
 
-/main
 /psctl
 logs/
 configs/
 wk*/
-ansible_data/
 data/
 
 /*.toml
