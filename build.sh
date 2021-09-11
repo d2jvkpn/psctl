@@ -1,17 +1,18 @@
 #! /usr/bin/env bash
 set -eu -o pipefail
 
-wd=$(pwd)
+_wd=$(pwd)
+_path=$(dirname $0)
 
 
-branch=$(git rev-parse --abbrev-ref HEAD)
+test -z "$(git status --short)" || { echo "You have uncommitted changes!"; exit 1; }
 
-git add -A # include untracked files for git diff, undo with git reset && git checkout .
-test -z "$(git diff HEAD)" || { echo "You have uncommitted changes!"; exit 1; }
-
-test -z "$(git diff origin/$branch..HEAD --name-status)" ||
+b1=$(git rev-parse --abbrev-ref HEAD)
+test -z "$(git diff origin/$b1..HEAD --name-status)" ||
   { echo "You have unpushed commits!"; exit 1; }
 
+
+branch=$b1
 
 go build -o psctl -ldflags="                 \
   -X psctl/cmd.BuildBranch="${branch}"       \
