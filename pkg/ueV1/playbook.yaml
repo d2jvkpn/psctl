@@ -16,7 +16,7 @@
   - name: copy execute.py
     tags: ["prepare", "copy_script"]
     win_copy:
-      src: "{{root_path}}/scripts/execute.py"
+      src: "./execute.py"
       dest: "{{work_path}}"
 
   ####

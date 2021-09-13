@@ -94,8 +94,11 @@ func (inst *Instance) NewPlaybook(override bool) (err error) {
 		return fmt.Errorf("mkdir %s: %w", dir, err)
 	}
 
-	err = ioutil.WriteFile(filepath.Join(dir, "playbook.yaml"), playbook, 0644)
-	if err != nil {
+	if err = ioutil.WriteFile(filepath.Join(dir, "playbook.yaml"), playbook, 0644); err != nil {
+		return err
+	}
+
+	if err = ioutil.WriteFile(filepath.Join(dir, "execute.py"), execute, 0644); err != nil {
 		return err
 	}
 

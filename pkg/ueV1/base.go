@@ -15,6 +15,9 @@ var (
 	//go:embed playbook.yaml
 	playbook []byte
 
+	//go:embed execute.py
+	execute []byte
+
 	//go:embed vars.tmpl
 	varsYaml     string
 	varsYamlTmpl *template.Template
