@@ -48,7 +48,7 @@ func (inst *Instance) Playbook(arg ...string) (err error) {
 	// cmds = append(cmds, "playbook.yaml", "--inventory", inst.Root+"/hosts.ini")
 	cmds = append(cmds, "playbook.yaml")
 	if inst.Debug {
-		cmds = append(cmds, "-v")
+		cmds = append(cmds, "-vv")
 	}
 	cmds = append(cmds, "--inventory", "../../../../hosts.ini")
 	cmds = append(cmds, arg...)

@@ -5,8 +5,7 @@
   tasks:
   ####
   - name: setup
-    setup:
-      filter: ansible_date_time
+    setup: {filter: "ansible_date_time"}
 
   ####
   - name: ping
@@ -15,30 +14,25 @@
 
   - name: copy execute.py
     tags: ["prepare", "copy_script"]
-    win_copy:
-      src: "./execute.py"
-      dest: "{{work_path}}"
+    win_copy: {src: "./execute.py", dest: "{{work_path}}"}
 
   ####
   - name: run job
     tags: ["start"]
     async: 1
     poll: 0
-    args:
-      chdir: "{{work_path}}"
+    args: {chdir: "{{work_path}}"}
     win_command: python .\execute.py run {{win_cmd}}
 
   - name: wait for pidfile
     tags: ["start"]
-    win_wait_for:
-      timeout: 5 # must greater than "time.sleep(v)" before "proc.poll()" in scripts/execute.py
-      path: "{{work_path}}\\{{command_md5}}.pid"
+    # must greater than "time.sleep(v)" before "proc.poll()" in scripts/execute.py
+    win_wait_for: {timeout: 5, path: "{{work_path}}\\{{command_md5}}.pid"}
 
   ####
   - name: execute job
     tags: ["execute"]
-    args:
-      chdir: "{{work_path}}"
+    args: {chdir: "{{work_path}}"}
     win_command: python .\execute.py {{call}} {{win_cmd}}
 
 
@@ -63,8 +57,7 @@
   - name: job status
     tags: ["get_status"]
     register: job_status
-    args:
-      chdir: "{{work_path}}"
+    args: {chdir: "{{work_path}}"}
     win_command: python .\execute.py status {{win_cmd}}
 
   - name: read status
