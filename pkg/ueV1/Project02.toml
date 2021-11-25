@@ -1,5 +1,0 @@
-# 4.27
-host = "win01"
-project = "D:\\projects\\Project01"
-program = "Project01"
-swsUrl = "ws://192.168.1.101:8202/ws/streamer"

@@ -1,5 +1,5 @@
 host: win01
 project: D:\projects\ArchVizExplorerr426
 program: ArchVizExplorer
-swsIp: 192.168.0.171
+swsIp: 192.168.1.101
 swsPort: 8102

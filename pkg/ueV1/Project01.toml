@@ -1,6 +1,0 @@
-# 4.26
-host = "win01"
-project = "D:\\projects\\Project01"
-program = "Project01"
-swsIp = "192.168.1.101"
-swsPort = "8201"
