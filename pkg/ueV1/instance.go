@@ -19,8 +19,8 @@ import (
 
 func (inst InstanceBase) String() string {
 	return fmt.Sprintf(
-		"host=%q, project=%q, program=%q, swsIp=%q, swsPort=%q",
-		inst.Host, inst.Project, inst.Program, inst.SwsIp, inst.SwsPort,
+		"host=%q, project=%q, program=%q, swsUrl=%q, swsIp=%q, swsPort=%q",
+		inst.Host, inst.Project, inst.Program, inst.SwsUrl, inst.SwsIp, inst.SwsPort,
 	)
 }
 
@@ -55,8 +55,16 @@ func InstanceFromFile(fp string, ids ...int64) (inst Instance, err error) {
 }
 
 func (base InstanceBase) commandline() []string {
-	return []string{base.Program + ".exe", "-AudioMixer", "-PixelStreamingIP=" + base.SwsIp,
-		"-PixelStreamingPort=" + base.SwsPort, "-RenderOffScreen",
+	if base.SwsUrl != "" {
+		return []string{
+			base.Program + ".exe", "-AudioMixer", "-RenderOffScreen",
+			"-PixelStreamingURL=" + base.SwsUrl,
+		}
+	} else {
+		return []string{
+			base.Program + ".exe", "-AudioMixer", "-RenderOffScreen",
+			"-PixelStreamingIP=" + base.SwsIp, "-PixelStreamingPort=" + base.SwsPort,
+		}
 	}
 }
 

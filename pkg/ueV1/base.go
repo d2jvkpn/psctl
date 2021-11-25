@@ -29,14 +29,14 @@ func init() {
 	if varsYamlTmpl, err = template.New("varsYaml").Parse(varsYaml); err != nil {
 		fmt.Fprintf(os.Stderr, "ue.varsYamlTmpl Parse: %v\n", err)
 	}
-
 }
 
 type InstanceBase struct {
 	Host    string `toml:"host" yaml:"host" json:"host,omitempty"`          // ansbile hostname or host group name
 	Project string `toml:"project" yaml:"project" json:"project,omitempty"` // project directory in windows host(s)
 	Program string `toml:"program" yaml:"program" json:"program,omitempty"` // exe program filename without extension
-	SwsIp   string `toml:"swsIp" yaml:"swsIp" json:"swsIp,omitempty"`       // singaling and web server ip
+	SwsUrl  string `toml:"swsUrl" yam:"swsUrl" json:"swsUrl,omitempty"`     // SS ws URL
+	SwsIp   string `toml:"swsIp" yaml:"swsIp" json:"swsIp,omitempty"`       // singalling and web server ip
 	SwsPort string `toml:"swsPort" yaml:"swsPort" json:"swsPort,omitempty"` // sws streamer port
 }
 
